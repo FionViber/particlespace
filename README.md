@@ -1,5 +1,7 @@
-# WebPP
+# Particle Space
 
-[Open WebPP](https://fionviber.github.io/WebPP/)
+A password-protected image editor for the browser. Create and edit layered documents, save your work as PSD and export finished images as PNG or JPEG.
 
-A password-protected browser image editor. PageCrypt 7.1.0 protects the entry page. Encrypted application files and bundled resources are served from this repository; no official-site iframe is used. The editor does not restrict its hosting address.
+[Open Particle Space](https://fionviber.github.io/WebPP/)
+
+The entry page uses PageCrypt 7.1.0. The editor loads its encrypted files from the same site.
