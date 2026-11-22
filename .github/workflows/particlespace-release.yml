@@ -1,0 +1,40 @@
+name: Verify and stage the encrypted release
+on:
+  push:
+    branches: [particlespace]
+    paths: ['.github/workflows/particlespace-release.yml']
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read the encrypted release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/codexinternal"
+          gh release download particlespace-2026-11-23 --repo "$GITHUB_REPOSITORY" --pattern particlespace.zip --dir "$RUNNER_TEMP/codexinternal"
+          cd "$RUNNER_TEMP/codexinternal"
+          echo "61b8632324abdc297212b0f85bb7d51c3659536bf07b8997ef1d88e7eea4d3ee  particlespace.zip" | sha256sum -c -
+      - name: Validate and stage the static site
+        shell: python
+        run: |
+          import os, zipfile
+          from pathlib import Path
+          archive = Path(os.environ['RUNNER_TEMP'])/'codexinternal/particlespace.zip'
+          expected = {'index.html','.nojekyll'} | {f'payload/{i:02d}.bin' for i in range(10)}
+          with zipfile.ZipFile(archive) as files:
+              assert len(files.namelist()) == len(expected) and set(files.namelist()) == expected
+              for name in sorted(expected):
+                  path = Path(name)
+                  path.parent.mkdir(parents=True, exist_ok=True)
+                  path.write_bytes(files.read(name))
+      - name: Commit the verified chunks
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- index.html payload .nojekyll
+          git commit -m "Publish the verified Particle Space application chunks"
+          git push origin HEAD:particlespace
