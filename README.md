@@ -1,7 +1,7 @@
 # Particle Space
 
-A password-protected image editor for the browser. Create and edit layered documents, save your work as PSD and export finished images as PNG or JPEG.
+A password-protected browser image editor for layered documents. Open a local image, edit it on the canvas and export the result.
 
-[Open Particle Space](https://fionviber.github.io/WebPP/)
+[Open Particle Space](https://fionviber.github.io/particlespace/)
 
-The entry page uses PageCrypt 7.1.0. The editor loads its encrypted files from the same site.
+PageCrypt protects the entry page. The editor, fonts and offline extensions load from the same site.
